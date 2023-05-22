@@ -22,6 +22,8 @@ db.connect((err) => {
     startApp();
 });
 
+// function to start application and use inquirer. 
+// listing of prompts that you can choose
 function startApp() {
     inquirer
         .createPromptModule() // Create prompt module
@@ -62,6 +64,7 @@ function startApp() {
         });
 }
 
+// function to view all from department table that was created in the database
 function viewDepartment() {
     db.query('SELECT * FROM department', (err, results) => {
       if (err) throw err;
@@ -71,6 +74,7 @@ function viewDepartment() {
     });
   }
   
+//   function to view the roles with the salary that is listed in the data base
   function viewRoles() {
     db.query(
       `SELECT roles.id, title, salary AS department FROM roles INNER JOIN department ON roles.department_id = department.id`,
@@ -83,6 +87,7 @@ function viewDepartment() {
     );
   }
   
+//   function to view employees full name role and salary
   function viewEmployees() {
     db.query(
         `SELECT employee.id, first_name, last_name, roles.title, department.department_name AS department, roles.salary FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN department ON roles.department_id = department.id`,
@@ -115,7 +120,50 @@ function viewDepartment() {
         );
       });
   }
+
+  function addRole() {
+    inquirer
+      .createPromptModule() // Create prompt module
+      ({
+        type: 'input',
+        name: 'roles',
+        message: 'Enter the name of the role:'
+      })
+      .then((answers) => {
+        db.query(
+          'INSERT INTO role (title, salary) VALUES (?)',
+          [answers.name],
+          (err, result) => {
+            if (err) throw err;
+            console.log('Role added successfully');
+            startApp();
+          }
+        );
+      });
+  }
   
+  function addEmployee() {
+    inquirer
+      .createPromptModule() // Create prompt module
+      ({
+        type: 'input',
+        name: 'addEmployee',
+        message: 'Enter the name of the employee:'
+      })
+      .then((answers) => {
+        db.query(
+          'INSERT INTO employee (first_name, last_name) VALUES (?)',
+          [answers.name],
+          (err, result) => {
+            if (err) throw err;
+            console.log('Employee added successfully');
+            startApp();
+          }
+        );
+      });
+  }
+  
+
   
   
   
